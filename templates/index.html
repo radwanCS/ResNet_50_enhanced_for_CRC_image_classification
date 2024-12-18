@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CRC_IMAGE_CLASSIFICATION</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="content">
+    <div class="jumbotron">
+        <div class="container"
+             style="background-color: #F8F8F8;border-radius: 10px ;padding: 20px;padding-top: 10px;margin-top: -20px;">
+            <form action="javascript:void(0)" method="post" enctype="multipart/form-data" id="predict" style="text-align: center;">
+               
+                <h3>Upload</h3>
+                <div class="form-group" style="text-align: center;;">
+                    <input type="file" class="form-control" name="image" placeholder="Search" style="width: 400px;margin: 0 auto;"
+                           onchange=onUpload1(this.files[0])>
+                </div>
+
+           
+
+                <button type="submit" id="submit" class="btn btn-info" style="margin-top: 20px;">Submit</button>
+               
+
+            </form>
+
+            <div class=" justify-content-center" style="display:none">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="container"
+             style="background-color: #F8F8F8;border-radius: 10px ;padding: 20px;margin-top: 20px">
+            <h3>Classification Results</h3>
+            <div id="predict-body" style="text-align: center;">
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script type="application/javascript" src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script type="application/javascript"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+<script src="/static/layer/layer.js"></script>
+<script type="application/javascript">
+
+
+    $("#submit").click(function () {
+        $(".justify-content-center").addClass("d-flex").show();
+        console.log($("#predict-body>div"));
+        $("#predict-body").html(' ');
+
+        $.ajax({
+            type: "post",
+            data: new FormData($('#predict')[0]),
+            cache: false,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function (ret) {
+                $(".justify-content-center").removeClass("d-flex").hide();
+
+                $("#predict-body").html(
+                        `<div> ${ret.data.predict}%${ret.data.target}
+                     
+                       <br>
+                       
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <div> ${ret.data.predict2}%${ret.data.target2}
+                      
+                       <br>
+                 
+                  
+                
+                   </div>
+                 
+                    `
+                )
+
+                console.log(ret)
+            }, error: function (rel) {
+                alert("Please choose a photo")
+            }
+
+        })
+    });
+
+  
+    function onUpload1(file) {
+        var fr = new FileReader();
+        fr.readAsDataURL(file);  // 将文件读取为Data URL
+
+        fr.onload = function (e) {
+            var result = e.target.result;
+            $("#predict-img").attr("src", result)
+        }
+    }
+
+
+
+
+</script>
+</body>
+</html>
